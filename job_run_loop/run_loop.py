@@ -156,6 +156,7 @@ def my_query(the_query):
 def my_update(the_query):
     """Execute the given update SPARQL query on the tripple store,
     if the given query is no update query, nothing happens."""
+    log("execute query: \n" + the_query)
     sparqlUpdate.setQuery(the_query)
     if sparqlUpdate.isSparqlUpdateRequest():
         sparqlUpdate.query()

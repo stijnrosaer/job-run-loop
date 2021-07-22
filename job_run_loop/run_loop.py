@@ -67,7 +67,7 @@ def update_job(id, status):
     }
     """).substitute(
         uuid=id,
-        oldstate=sparql_escape_string(stat_list[new_idx - 1]),
+        oldstate=sparql_escape_uri(stat_list[new_idx - 1]),
         newstate=sparql_escape_uri(status),
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
     )

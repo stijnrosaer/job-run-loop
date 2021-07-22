@@ -7,6 +7,7 @@ from string import Template
 
 from time import sleep
 
+
 def get_job(task):
     """
     Get the first queued job in the triple store
@@ -100,10 +101,11 @@ def get_file_by_id(id):
     return my_query(construct_get_file_by_id(id))
 
 
-def start_loop():
+def start_loop(call_method):
     """
     Run the job loop to fetch jobs and execute them is correct task type.
     Single threaded: only one task is executed per loop
+    :param call_method: Method to be called on action
     :return:
     """
     watchedTask = os.environ.get('TASK')
@@ -125,14 +127,13 @@ def start_loop():
                     data = f.read()
                 data = json.loads(data)
 
-                algo_response = run(data)
-                log(algo_response)
+                resp = call_method(data)
+                log(resp)
 
             except Exception as e:
                 log(e)
 
             update_job(id, "done")
-
         sleep(20)
 
 

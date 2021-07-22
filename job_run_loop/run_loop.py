@@ -7,6 +7,7 @@ from string import Template
 
 from time import sleep
 
+MU_APPLICATION_GRAPH = os.environ.get('MU_APPLICATION_GRAPH')
 
 def get_job(task):
     """
@@ -16,7 +17,7 @@ def get_job(task):
     q = Template("""
     PREFIX mu: <http://mu.semte.ch/vocabularies/ext/>
     SELECT ?source ?task ?uuid
-    FROM <http://mu.semte.ch/application> 
+    FROM $graph
     WHERE {
        ?job a <http://mu.semte.ch/vocabularies/ext/Job> ;
           mu:source ?source;
@@ -27,6 +28,7 @@ def get_job(task):
     LIMIT 1
     """).substitute(
         task=sparql_escape_string(task),
+        graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
     )
 
     res = my_query(q)
@@ -51,7 +53,7 @@ def update_job(id, status):
 
     q = Template("""
     PREFIX mu: <http://mu.semte.ch/vocabularies/ext/>
-    WITH <http://mu.semte.ch/application>
+    WITH $graph
     DELETE {?job mu:status $oldstate}
     INSERT {?job mu:status $newstate}
     WHERE {
@@ -62,6 +64,7 @@ def update_job(id, status):
         uuid=id,
         oldstate=sparql_escape_string(stat_list[new_idx - 1]),
         newstate=sparql_escape_string(status),
+        graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
     )
     my_update(q)
 
@@ -88,7 +91,7 @@ def construct_get_file_by_id(file_id):
     LIMIT 1
     """)
     return query_template.substitute(
-        graph=sparql_escape_uri("http://mu.semte.ch/application"),
+        graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
         uuid=sparql_escape_string(file_id))
 
 

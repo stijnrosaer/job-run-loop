@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name="job_run_loop",
+    name="job-run-loop",
     version="0.0.1",
     author="Stijn Rosaer",
     author_email="stijn.rosaer@telenet.be",

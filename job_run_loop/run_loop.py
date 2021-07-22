@@ -52,6 +52,8 @@ def update_job(id, status):
     stat_list = ["queued", "processing", "done"]
     uri = "http://mu.semte.ch/vocabularies/ext/status#"
     stat_list = [uri + item for item in stat_list]
+
+    status = "http://mu.semte.ch/vocabularies/ext/status#" + status
     new_idx = stat_list.index(status)
 
     q = Template("""
@@ -66,7 +68,7 @@ def update_job(id, status):
     """).substitute(
         uuid=id,
         oldstate=sparql_escape_string(stat_list[new_idx - 1]),
-        newstate=sparql_escape_string(status),
+        newstate=sparql_escape_uri(status),
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
     )
     my_update(q)

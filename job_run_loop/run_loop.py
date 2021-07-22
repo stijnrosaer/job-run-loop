@@ -151,6 +151,3 @@ def my_update(the_query):
     sparqlUpdate.setQuery(the_query)
     if sparqlUpdate.isSparqlUpdateRequest():
         sparqlUpdate.query()
-
-
-start_loop()

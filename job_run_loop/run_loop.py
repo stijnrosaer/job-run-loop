@@ -49,6 +49,8 @@ def update_job(id, status):
     :return:
     """
     stat_list = ["queued", "processing", "done"]
+    uri = "http://mu.semte.ch/vocabularies/ext/status#"
+    stat_list = [uri + item for item in stat_list]
     new_idx = stat_list.index(status)
 
     q = Template("""

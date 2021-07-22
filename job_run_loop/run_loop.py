@@ -105,7 +105,7 @@ def start_loop(call_method):
     """
     Run the job loop to fetch jobs and execute them is correct task type.
     Single threaded: only one task is executed per loop
-    :param call_method: Method to be called on action
+    :param call_method: Method to be called after loading data
     :return:
     """
     watchedTask = os.environ.get('TASK')

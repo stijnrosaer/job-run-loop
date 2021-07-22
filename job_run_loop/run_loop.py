@@ -16,6 +16,7 @@ def get_job(task):
     """
     q = Template("""
     PREFIX mu: <http://mu.semte.ch/vocabularies/ext/>
+    PREFIX status: <http://mu.semte.ch/vocabularies/ext/status#>
     SELECT ?source ?task ?uuid
     FROM $graph
     WHERE {
@@ -23,7 +24,7 @@ def get_job(task):
           mu:source ?source;
           mu:task $task;
           mu:uuid ?uuid;
-          mu:status "queued" . 
+          mu:status status:queued . 
     }
     LIMIT 1
     """).substitute(

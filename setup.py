@@ -12,7 +12,6 @@ setuptools.setup(
         "requests",
         "SPARQLWrapper",
         "rdflib",
-        "https://github.com/stijnrosaer/python-sparql-helper.git"
     ],
     url="https://github.com/stijnrosaer/job-run-loop",
     packages=setuptools.find_packages(),

@@ -9,6 +9,7 @@ from time import sleep
 
 MU_APPLICATION_GRAPH = os.environ.get('MU_APPLICATION_GRAPH')
 
+
 def get_job(task):
     """
     Get the first queued job in the triple store
@@ -49,25 +50,20 @@ def update_job(id, status):
     :param status: new status (queued, processing, done)
     :return:
     """
-    stat_list = ["queued", "processing", "done"]
-    uri = "http://mu.semte.ch/vocabularies/ext/status#"
-    stat_list = [uri + item for item in stat_list]
-
     status = "http://mu.semte.ch/vocabularies/ext/status#" + status
-    new_idx = stat_list.index(status)
 
     q = Template("""
     PREFIX mu: <http://mu.semte.ch/vocabularies/ext/>
     WITH $graph
-    DELETE {?job mu:status $oldstate}
+    DELETE {?job mu:status ?status}
     INSERT {?job mu:status $newstate}
     WHERE {
         ?job a <http://mu.semte.ch/vocabularies/ext/Job> ;
-          mu:uuid "$uuid" .
+          mu:uuid "$uuid";
+          mu:status ?status .
     }
     """).substitute(
         uuid=id,
-        oldstate=sparql_escape_uri(stat_list[new_idx - 1]),
         newstate=sparql_escape_uri(status),
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
     )
@@ -128,6 +124,7 @@ def start_loop(call_method):
 
             try:
                 update_job(id, "processing")
+
                 file = get_file_by_id(file_id)
                 uri = file["results"]["bindings"][0]["uri"]["value"].replace("share://", "/share/")
                 log(uri)
@@ -138,10 +135,12 @@ def start_loop(call_method):
                 resp = call_method(data)
                 log(resp)
 
+                update_job(id, "done")
+
             except Exception as e:
                 log(e)
+                update_job(id, "failed")
 
-            update_job(id, "done")
         sleep(20)
 
 

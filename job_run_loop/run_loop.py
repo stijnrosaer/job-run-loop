@@ -1,8 +1,8 @@
 import json
 import os
 
-from helpers import query, log, sparqlQuery, sparqlUpdate
-from escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_escape_int, sparql_escape_datetime
+from sparql_helper.helpers import query, update, log, sparqlQuery, sparqlUpdate
+from sparql_helper.escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_escape_int, sparql_escape_datetime
 from string import Template
 
 from time import sleep
@@ -33,7 +33,7 @@ def get_job(task):
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
     )
 
-    res = my_query(q)
+    res = query(q)
 
     r = list(res["results"]["bindings"])
 
@@ -67,7 +67,7 @@ def update_job(id, status):
         newstate=sparql_escape_uri(status),
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
     )
-    my_update(q)
+    update(q)
 
 
 def construct_get_file_by_id(file_id):
@@ -102,7 +102,7 @@ def get_file_by_id(id):
     :param id: sting:file id
     :return: file information
     """
-    return my_query(construct_get_file_by_id(id))
+    return query(construct_get_file_by_id(id))
 
 
 def start_loop(call_method):
@@ -142,20 +142,3 @@ def start_loop(call_method):
                 update_job(id, "failed")
 
         sleep(20)
-
-
-def my_query(the_query):
-    """Execute the given SPARQL query (select/ask/construct)on the tripple store and returns the results
-    in the given returnFormat (JSON by default)."""
-    log("execute query: \n" + the_query)
-    sparqlQuery.setQuery(the_query)
-    return sparqlQuery.query().convert()
-
-
-def my_update(the_query):
-    """Execute the given update SPARQL query on the tripple store,
-    if the given query is no update query, nothing happens."""
-    log("execute query: \n" + the_query)
-    sparqlUpdate.setQuery(the_query)
-    if sparqlUpdate.isSparqlUpdateRequest():
-        sparqlUpdate.query()

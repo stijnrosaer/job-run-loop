@@ -80,7 +80,7 @@ def add_result(id, result_file_id):
     q = Template("""
     PREFIX mu: <http://mu.semte.ch/vocabularies/ext/>
     WITH $graph
-    INSERT {?job mu:result $file_id}
+    INSERT {?job mu:result "$file_id"}
     WHERE {
         ?job a <http://mu.semte.ch/vocabularies/ext/Job> ;
           mu:uuid "$uuid";
@@ -88,7 +88,7 @@ def add_result(id, result_file_id):
     """).substitute(
         uuid=id,
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
-        file_id=sparql_escape_string(result_file_id),
+        file_id=result_file_id,
     )
     my_update(q)
 

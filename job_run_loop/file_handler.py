@@ -1,5 +1,5 @@
 from escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_escape_int, sparql_escape_datetime
-from helpers import query, update, generate_uuid
+from helpers import my_query, my_update, generate_uuid
 import os
 from string import Template
 from pytz import timezone
@@ -91,7 +91,7 @@ def get_file_by_id(id):
         :param id: sting:file id
         :return: file information
         """
-    return query(construct_get_file_by_id(id))
+    return my_query(construct_get_file_by_id(id))
 
 
 def postfile(filePath, fileName):
@@ -125,6 +125,6 @@ def postfile(filePath, fileName):
 
     queryString = construct_insert_file_query(virtualFile, physicalFile)
 
-    update(queryString)
+    my_update(queryString)
 
     return {"id": virtualFile["uuid"], "uri": virtualFile["uri"]}

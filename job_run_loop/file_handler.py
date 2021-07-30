@@ -7,6 +7,7 @@ from datetime import datetime
 
 TIMEZONE = timezone("Europe/Brussels")
 FILE_BASE_URI = "http://file/files/"
+MU_APPLICATION_GRAPH = os.environ.get('MU_APPLICATION_GRAPH')
 
 
 def construct_insert_file_query(virtualFile, physicalFile):
@@ -44,7 +45,7 @@ def construct_insert_file_query(virtualFile, physicalFile):
     """)
 
     return queryTemplate.substitute(
-        graph=sparql_escape_uri("http://mu.semte.ch/application"),
+        graph=sparql_escape_uri(MU_APPLICATION_GRAPH or"http://mu.semte.ch/application"),
         uri=sparql_escape_uri(virtualFile["uri"]),
         uuid=sparql_escape_string(virtualFile["uuid"]),
         name=sparql_escape_string(virtualFile["name"]),
@@ -60,24 +61,36 @@ def construct_insert_file_query(virtualFile, physicalFile):
 
 
 def construct_get_file_by_id(file_id):
+    """
+    Construct query to get file based on file id
+    :param file_id: string:file id
+    :return: string:query
+    """
     query_template = Template("""
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
     PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-    SELECT (?file AS ?uri)
+    PREFIX nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#>
+    SELECT (?phys_file AS ?uri)
     WHERE {
         GRAPH $graph {
-            ?file a nfo:FileDataObject ;
+            ?virt_file a nfo:FileDataObject ;
                 mu:uuid $uuid .
+            ?phys_file a nfo:FileDataObject ;
+                nie:dataSource ?virt_file .
         }
     }
     LIMIT 1
     """)
     return query_template.substitute(
-        graph=sparql_escape_uri("http://mu.semte.ch/application"),
+        graph=sparql_escape_uri(MU_APPLICATION_GRAPH or"http://mu.semte.ch/application"),
         uuid=sparql_escape_string(file_id))
 
-
 def get_file_by_id(id):
+    """
+        Execute query get file by id
+        :param id: sting:file id
+        :return: file information
+        """
     return query(construct_get_file_by_id(id))
 
 

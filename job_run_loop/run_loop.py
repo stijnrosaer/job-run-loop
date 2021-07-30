@@ -1,9 +1,10 @@
 import json
 import os
 
-from helpers import query, log, sparqlQuery, sparqlUpdate
+from helpers import query, log, sparqlQuery, sparqlUpdate, generate_uuid
 from escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_escape_int, sparql_escape_datetime
 from string import Template
+from file_handler import postfile, get_file_by_id
 
 from time import sleep
 
@@ -69,41 +70,27 @@ def update_job(id, status):
     )
     my_update(q)
 
-
-def construct_get_file_by_id(file_id):
+def add_result(id, result_file_id):
     """
-    Construct query to get file based on file id
-    :param file_id: string:file id
-    :return: string:query
+    Forward status of job to the next state. If a state is skipped, a new job will be created!
+    :param id: job id
+    :param status: new status (queued, processing, done)
+    :return:
     """
-    query_template = Template("""
-    PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
-    PREFIX nfo: <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#>
-    PREFIX nie: <http://www.semanticdesktop.org/ontologies/2007/01/19/nie#>
-    SELECT (?phys_file AS ?uri)
+    q = Template("""
+    PREFIX mu: <http://mu.semte.ch/vocabularies/ext/>
+    WITH $graph
+    INSERT {?job mu:result $file_id}
     WHERE {
-        GRAPH $graph {
-            ?virt_file a nfo:FileDataObject ;
-                mu:uuid $uuid .
-            ?phys_file a nfo:FileDataObject ;
-                nie:dataSource ?virt_file .
-        }
+        ?job a <http://mu.semte.ch/vocabularies/ext/Job> ;
+          mu:uuid "$uuid";
     }
-    LIMIT 1
-    """)
-    return query_template.substitute(
+    """).substitute(
+        uuid=id,
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
-        uuid=sparql_escape_string(file_id))
-
-
-def get_file_by_id(id):
-    """
-    Execute query get file by id
-    :param id: sting:file id
-    :return: file information
-    """
-    return my_query(construct_get_file_by_id(id))
-
+        file_id=result_file_id
+    )
+    my_update(q)
 
 def start_loop(call_method):
     """
@@ -134,6 +121,16 @@ def start_loop(call_method):
 
                 resp = call_method(data)
                 log(resp)
+
+                if resp:
+                    file_id = generate_uuid()
+                    dumpFileName = f"{file_id}.json"
+                    dumpFilePath = f'/share/ai-files/{dumpFileName}'
+                    with open(dumpFilePath, 'w') as f:
+                        f.writelines(data)
+
+                    file_info = postfile(dumpFilePath, dumpFileName)["id"]
+                    add_result(id, file_info)
 
                 update_job(id, "done")
 

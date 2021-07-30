@@ -82,7 +82,7 @@ def add_result(id, result_file_id):
     INSERT { GRAPH $graph {?job mu:result "$file_id"} }
     WHERE { GRAPH $graph {
         ?job a <http://mu.semte.ch/vocabularies/ext/Job> ;
-          mu:uuid "$uuid";
+          mu:uuid "$uuid" .
     } }
     """).substitute(
         uuid=id,

@@ -1,7 +1,7 @@
 import json
 import os
 
-from helpers import query, log, sparqlQuery, sparqlUpdate, generate_uuid
+from helpers import my_query, my_update, log, generate_uuid
 from escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_escape_int, sparql_escape_datetime
 from string import Template
 from .file_handler import postfile, get_file_by_id
@@ -139,20 +139,3 @@ def start_loop(call_method):
                 update_job(id, "failed")
 
         sleep(20)
-
-
-def my_query(the_query):
-    """Execute the given SPARQL query (select/ask/construct)on the tripple store and returns the results
-    in the given returnFormat (JSON by default)."""
-    log("execute query: \n" + the_query)
-    sparqlQuery.setQuery(the_query)
-    return sparqlQuery.query().convert()
-
-
-def my_update(the_query):
-    """Execute the given update SPARQL query on the tripple store,
-    if the given query is no update query, nothing happens."""
-    log("execute query: \n" + the_query)
-    sparqlUpdate.setQuery(the_query)
-    if sparqlUpdate.isSparqlUpdateRequest():
-        sparqlUpdate.query()

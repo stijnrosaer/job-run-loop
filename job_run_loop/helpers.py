@@ -24,8 +24,9 @@ logger = logging.getLogger('MU_PYTHON_TEMPLATE_LOGGER')
 logger.setLevel(log_levels.get(os.environ.get('LOG_LEVEL').upper()))
 fileHandler = logging.FileHandler("{0}/{1}.log".format(log_dir, 'logs'))
 logger.addHandler(fileHandler)
-consoleHandler = logging.StreamHandler(stream=sys.stdout)# or stderr?
+consoleHandler = logging.StreamHandler(stream=sys.stdout)  # or stderr?
 logger.addHandler(consoleHandler)
+
 
 def generate_uuid():
     """Generates a unique user id based the host ID and current time"""
@@ -92,6 +93,7 @@ MU_HEADERS = [
     "MU-AUTH-USED-GROUPS"
 ]
 
+
 def query(the_query):
     """Execute the given SPARQL query (select/ask/construct)on the tripple store and returns the results
     in the given returnFormat (JSON by default)."""
@@ -99,7 +101,7 @@ def query(the_query):
     for header in MU_HEADERS:
         if header in request.headers:
             sparqlQuery.customHttpHeaders[header] = request.headers[header]
-        else: # Make sure headers used for a previous query are cleared
+        else:  # Make sure headers used for a previous query are cleared
             if header in sparqlQuery.customHttpHeaders:
                 del sparqlQuery.customHttpHeaders[header]
     sparqlQuery.setQuery(the_query)
@@ -112,7 +114,7 @@ def update(the_query):
     for header in MU_HEADERS:
         if header in request.headers:
             sparqlUpdate.customHttpHeaders[header] = request.headers[header]
-        else: # Make sure headers used for a previous query are cleared
+        else:  # Make sure headers used for a previous query are cleared
             if header in sparqlUpdate.customHttpHeaders:
                 del sparqlUpdate.customHttpHeaders[header]
     sparqlUpdate.setQuery(the_query)
@@ -138,6 +140,7 @@ def update_modified(subject, modified=datetime.datetime.now()):
     query += "   }"
     query += " }"
     update(query)
+
 
 def my_query(the_query):
     """Execute the given SPARQL query (select/ask/construct)on the tripple store and returns the results

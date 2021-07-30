@@ -1,10 +1,10 @@
 import json
 import os
 
-from helpers import log, generate_uuid
-from escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_escape_int, sparql_escape_datetime
+from .helpers import log, generate_uuid
+from .escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_escape_int, sparql_escape_datetime
 from string import Template
-from file_handler import postfile, get_file_by_id
+from .file_handler import postfile, get_file_by_id
 
 from time import sleep
 

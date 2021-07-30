@@ -88,7 +88,7 @@ def add_result(id, result_file_id):
     """).substitute(
         uuid=id,
         graph=sparql_escape_uri(MU_APPLICATION_GRAPH),
-        file_id=result_file_id
+        file_id=sparql_escape_string(result_file_id),
     )
     my_update(q)
 

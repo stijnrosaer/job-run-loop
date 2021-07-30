@@ -126,7 +126,7 @@ def start_loop(call_method):
                     dumpFileName = f"{file_id}.json"
                     dumpFilePath = f'/share/ai-files/{dumpFileName}'
                     with open(dumpFilePath, 'w') as f:
-                        f.writelines(data)
+                        f.write(data)
 
                     file_info = postfile(dumpFilePath, dumpFileName)["id"]
                     add_result(id, file_info)

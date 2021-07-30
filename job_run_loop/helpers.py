@@ -10,22 +10,6 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 MU_APPLICATION_GRAPH = os.environ.get('MU_APPLICATION_GRAPH')
 
-def my_query(the_query):
-    """Execute the given SPARQL query (select/ask/construct)on the tripple store and returns the results
-    in the given returnFormat (JSON by default)."""
-    log("execute query: \n" + the_query)
-    sparqlQuery.setQuery(the_query)
-    return sparqlQuery.query().convert()
-
-
-def my_update(the_query):
-    """Execute the given update SPARQL query on the tripple store,
-    if the given query is no update query, nothing happens."""
-    log("execute query: \n" + the_query)
-    sparqlUpdate.setQuery(the_query)
-    if sparqlUpdate.isSparqlUpdateRequest():
-        sparqlUpdate.query()
-
 # TODO: Figure out how logging works when production uses multiple workers
 log_levels = {
     'DEBUG': logging.DEBUG,
@@ -156,3 +140,20 @@ def update_modified(subject, modified=datetime.datetime.now()):
     query += "   }"
     query += " }"
     update(query)
+
+
+def my_query(the_query):
+    """Execute the given SPARQL query (select/ask/construct)on the tripple store and returns the results
+    in the given returnFormat (JSON by default)."""
+    log("execute query: \n" + the_query)
+    sparqlQuery.setQuery(the_query)
+    return sparqlQuery.query().convert()
+
+
+def my_update(the_query):
+    """Execute the given update SPARQL query on the tripple store,
+    if the given query is no update query, nothing happens."""
+    log("execute query: \n" + the_query)
+    sparqlUpdate.setQuery(the_query)
+    if sparqlUpdate.isSparqlUpdateRequest():
+        sparqlUpdate.query()

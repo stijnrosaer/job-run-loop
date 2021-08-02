@@ -128,8 +128,8 @@ def start_loop(call_method):
                         file_id = generate_uuid()
                         dumpFileName = f"{file_id}.json"
                         dumpFilePath = f'/share/ai-files/{dumpFileName}'
-                    with open(dumpFilePath, 'w') as f:
-                        f.write(resp)
+                        with open(dumpFilePath, 'w') as f:
+                            f.write(resp)
 
                     file_info = postfile(dumpFilePath, dumpFileName)["id"]
                     add_result(id, file_info)

@@ -119,7 +119,6 @@ def start_loop(call_method):
                 data = json.loads(data)
 
                 resp = call_method(data)
-                log(resp)
 
                 if resp:
                     file_id = generate_uuid()

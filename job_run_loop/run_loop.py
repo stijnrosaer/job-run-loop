@@ -121,9 +121,13 @@ def start_loop(call_method):
                 resp = call_method(data)
 
                 if resp:
-                    file_id = generate_uuid()
-                    dumpFileName = f"{file_id}.json"
-                    dumpFilePath = f'/share/ai-files/{dumpFileName}'
+                    if os.path.isfile(resp):
+                        dumpFileName = resp.split("/")[-1]
+                        dumpFilePath = resp
+                    else:
+                        file_id = generate_uuid()
+                        dumpFileName = f"{file_id}.json"
+                        dumpFilePath = f'/share/ai-files/{dumpFileName}'
                     with open(dumpFilePath, 'w') as f:
                         f.write(resp)
 

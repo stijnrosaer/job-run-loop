@@ -13,6 +13,9 @@ setuptools.setup(
         "SPARQLWrapper",
         "rdflib",
     ],
+    dependency_links=[
+        "git+https://github.com/stijnrosaer/mu-python-sparql-helper.git#egg=mu_sparql_helpers",
+    ],
     url="https://github.com/stijnrosaer/job-run-loop",
     packages=setuptools.find_packages(),
     classifiers=[

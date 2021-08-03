@@ -5,7 +5,7 @@ import os
 import sys
 from flask import jsonify, request
 from rdflib.namespace import DC
-from escape_helpers import sparql_escape
+from .escape_helpers import sparql_escape
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 MU_APPLICATION_GRAPH = os.environ.get('MU_APPLICATION_GRAPH')

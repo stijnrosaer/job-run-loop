@@ -71,6 +71,7 @@ def update_job(id, status):
     )
     my_update(q)
 
+
 def add_result(id, result_file_id):
     """
     Forward status of job to the next state. If a state is skipped, a new job will be created!
@@ -92,6 +93,7 @@ def add_result(id, result_file_id):
     )
     my_update(q)
 
+
 def wait_for_db():
     done = False
     while not done:
@@ -107,6 +109,7 @@ def wait_for_db():
             print("----- >aiting for contact with query and update endpoints")
             sleep(1)
 
+
 def start_loop(call_method):
     """
     Run the job loop to fetch jobs and execute them is correct task type.
@@ -115,6 +118,7 @@ def start_loop(call_method):
     :return:
     """
     watchedTask = os.environ.get('TASK')
+    wait_for_db()
 
     while True:
         job = get_job(watchedTask)

@@ -106,7 +106,7 @@ def wait_for_db():
             done = True
 
         except Exception as e:
-            print("----- >aiting for contact with query and update endpoints")
+            print("-----> Waiting for contact with query and update endpoints")
             sleep(1)
 
 

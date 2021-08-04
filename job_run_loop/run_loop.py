@@ -6,6 +6,7 @@ from .escape_helpers import sparql_escape_uri, sparql_escape_string, sparql_esca
 from string import Template
 from .file_handler import postfile, get_file_by_id
 
+import requests
 from time import sleep
 
 MU_APPLICATION_GRAPH = os.environ.get('MU_APPLICATION_GRAPH')
@@ -90,6 +91,21 @@ def add_result(id, result_file_id):
         file_id=result_file_id,
     )
     my_update(q)
+
+def wait_for_db():
+    done = False
+    while not done:
+        try:
+            resp = requests.get(os.environ.get("MU_SPARQL_UPDATEPOINT"))
+            assert resp.ok
+            resp = requests.get(os.environ.get("MU_SPARQL_ENDPOINT"))
+            assert resp.ok
+
+            done = True
+
+        except Exception as e:
+            print("----- >aiting for contact with query and update endpoints")
+            sleep(1)
 
 def start_loop(call_method):
     """
